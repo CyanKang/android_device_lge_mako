@@ -1,6 +1,7 @@
 [
  {
    "repository": "hellsgod/kernel_msm",
+   "branch": "AOSP",
    "target_path": "kernel/hellsgod/hellscore-mako"
  }
 ]
