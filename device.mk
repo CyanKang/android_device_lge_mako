@@ -103,6 +103,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/lge/mako/gps.conf:system/etc/gps.conf
 
+# Kernel config
+PRODUCT_COPY_FILES += \
+    device/lge/mako/configs/00config:system/etc/init.d/00config
+
 # NFC packages
 PRODUCT_PACKAGES += \
     nfc_nci.mako \
