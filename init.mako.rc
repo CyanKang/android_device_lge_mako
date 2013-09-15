@@ -480,8 +480,9 @@ service charger /charger
 service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
     class late_start
 
-service thermald /system/bin/thermald
-    class main
+# Don't start thermald, hellscore has its own mechanism
+#service thermald /system/bin/thermald
+#    class main
 
 # Don't start mpdecision, hellscore has its own mechanism
 #service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
