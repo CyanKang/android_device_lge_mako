@@ -1,7 +1,6 @@
 [
  {
-   "repository": "hellsgod/kernel_msm",
-   "branch": "AOSP",
-   "target_path": "kernel/hellsgod/hellscore-mako"
+   "repository": "android_kernel_google_msm",
+   "target_path": "kernel/google/msm"
  }
 ]

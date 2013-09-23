@@ -190,8 +190,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
 	hci_qcomm_init
 
-#PRODUCT_PACKAGES += \
-#	power.msm8960
+PRODUCT_PACKAGES += \
+	power.msm8960
 
 PRODUCT_COPY_FILES += \
 	device/lge/mako/init.mako.bt.sh:system/etc/init.mako.bt.sh
@@ -269,6 +269,9 @@ PRODUCT_PACKAGES += \
     libOmxAmrEnc \
     libOmxEvrcEnc \
     libOmxQcelp13Enc
+
+# QRNGD
+PRODUCT_PACKAGES += qrngd
 
 $(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
