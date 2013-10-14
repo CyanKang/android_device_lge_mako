@@ -265,24 +265,25 @@ on post-fs-data
     write /sys/module/pm_8x60/modes/cpu2/standalone_power_collapse/idle_enabled 1
     write /sys/module/pm_8x60/modes/cpu3/standalone_power_collapse/idle_enabled 1
     write /sys/module/pm_8x60/modes/cpu0/power_collapse/idle_enabled 1
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "ondemand"
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "ondemand"
-    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "ondemand"
-    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor "ondemand"
-    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 90
-    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
-    write /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy 1
-    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor 4
-    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 10
-    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_multi_core 60
-    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential_multi_core 3
-    write /sys/devices/system/cpu/cpufreq/ondemand/optimal_freq 918000
-    write /sys/devices/system/cpu/cpufreq/ondemand/sync_freq 1026000
-    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold_any_cpu_load 80
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "intellidemand"
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor "intellidemand"
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "intellidemand"
+    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor "intellidemand"
+    write /sys/devices/system/cpu/cpufreq/intellidemand/boostfreq 1026000
+    write /sys/devices/system/cpu/cpufreq/intellidemand/lmf_active_load 50
+    write /sys/devices/system/cpu/cpufreq/intellidemand/lmf_inactive_load 40
+    write /sys/devices/system/cpu/cpufreq/intellidemand/two_phase_freq 1350000
+    write /sys/devices/system/cpu/cpufreq/intellidemand/up_threshold 90
+    write /sys/devices/system/cpu/cpufreq/intellidemand/up_threshold_any_cpu_load 90
+    write /sys/devices/system/cpu/cpufreq/intellidemand/up_threshold_multi_core 90
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 384000
     write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 384000
     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq 384000
     write /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq 384000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1512000
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq 1512000
+    write /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq 1512000
+    write /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq 1512000
     write /sys/devices/system/cpu/cpu1/online 1
     write /sys/devices/system/cpu/cpu2/online 1
     write /sys/devices/system/cpu/cpu3/online 1
@@ -310,6 +311,44 @@ on post-fs-data
     restorecon /sys/devices/platform/mipi_lgit.1537/kgamma_g
     restorecon /sys/devices/platform/mipi_lgit.1537/kgamma_b
     restorecon /sys/devices/platform/mipi_lgit.1537/kgamma_apply
+    
+    # VM-Tweaks
+    write /proc/sys/vm/min_free_kbytes 4096
+    write /proc/sys/vm/oom_kill_allocating_task 0
+    write /proc/sys/vm/panic_on_oom 0
+    write /proc/sys/vm/laptop_mode 0
+    write /proc/sys/vm/swappiness 0
+    write /proc/sys/vm/vfs_cache_pressure 50
+    write /proc/sys/vm/dirty_ratio 90
+    write /proc/sys/vm/overcommit_memory 1
+    write /proc/sys/vm/min_free_order_shift 4
+    write /proc/sys/vm/oom_dump_tasks 1
+    write /proc/sys/vm/dirty_writeback_centisecs 1000
+    write /proc/sys/vm/dirty_expire_centisecs 500
+    write /proc/sys/vm/page-cluster 8
+    write /proc/sys/vm/drop_caches 3
+    
+    # File-System
+    write /proc/sys/fs/lease-break-time 10
+    write /proc/sys/fs/inotify/max_queued_events 32000
+    write /proc/sys/fs/file-max 524288
+    write /proc/sys/fs/inotify/max_user_instances 256
+    write /proc/sys/fs/inotify/max_user_watches 10240
+    
+    # Kernel-Tweaks
+    write /proc/sys/kernel/sched_min_granularity_ns 1000000
+    write /proc/sys/kernel/sched_latency_ns 18000000
+    write /proc/sys/kernel/sched_wakeup_granularity_ns 3000000
+    write /proc/sys/kernel/panic 0
+    write /proc/sys/kernel/panic_on_oops 1
+    write /proc/sys/kernel/msgmni 64000
+    write /proc/sys/kernel/msgmax 64000
+    write /proc/sys/kernel/shmmni 4096
+    write /proc/sys/kernel/shmall 2097152
+    write /proc/sys/kernel/shmmax 536870912
+    write /proc/sys/kernel/threads-max 524288
+    write /proc/sys/kernel/sem "500 512000 64 2048"
+    write /proc/sys/kernel/sched_child_runs_first 0
 
 on charger
     # Enable Power modes and set the CPU Freq Sampling rates
@@ -456,8 +495,9 @@ service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
 service thermald /system/bin/thermald
     class main
 
-service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
-    class main
+# Don't start mpdecision, hellscore has its own mechanism
+#service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
+#    class main
 
 service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
