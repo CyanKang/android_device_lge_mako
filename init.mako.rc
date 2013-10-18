@@ -226,9 +226,11 @@ on post-fs-data
     # LED On/Off synchronization
     chown system system /sys/class/leds/red/device/lock
 
+    /* We don't need this anymore...
     # communicate with mpdecision and thermald
     mkdir /dev/socket/mpdecision 0770 system system
     chmod 2770 /dev/socket/mpdecision
+    */
 
     # adjust vibrator amplitude
     write /sys/class/timed_output/vibrator/amp 70
